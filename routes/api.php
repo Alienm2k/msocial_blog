@@ -14,7 +14,7 @@ Route::post('login',[AuthController::class,'login']);
 Route::middleware(['auth:api'])->group(function(){
     // Profile
     Route::get('profile',[ProfileController::class,'profile']);
-
+    Route::get('profile-posts',[ProfileController::class,'post']);
     Route::post('logout',[AuthController::class,'logout']);
     // Category
     Route::get('categories',[CategoryController::class,'index']);
@@ -23,6 +23,7 @@ Route::middleware(['auth:api'])->group(function(){
     Route::get('post',[PostController::class,'index']);
 
     Route::post('post',[PostController::class,'create']);
+     Route::get('post/{id}',[PostController::class,'show']);
 
 
 });

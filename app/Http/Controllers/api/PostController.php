@@ -10,11 +10,12 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PostResource;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Resources\PostDetailResource;
 
 class PostController extends Controller
 {
     public function index(Request $request){
-       $query = Post::orderByDesc('created_at');
+       $query = Post::with('user','category','image')->orderByDesc('created_at');
     //    if($request->category_id){
     //     $query->where(function($q1) use ($request){
     //         $q1 ->where('category_id', $request->category_id);
@@ -56,6 +57,7 @@ class PostController extends Controller
 
 
             $post = new Post();
+            $post->auth()->user()->id;
             $post->title = $request->title;
             $post->description = $request->description;
             $post->category_id = $request->category_id;
@@ -76,6 +78,11 @@ class PostController extends Controller
             DB::rollback();
             return ResponseHelper::fail($e->getMessage());
            }
+   }
+
+   public function show($id){
+    $post = Post::with('user','category','image')->where('id',$id)->firstOrFail();
+    return ResponseHelper::success(new PostDetailResource($post));
    }
 }
 

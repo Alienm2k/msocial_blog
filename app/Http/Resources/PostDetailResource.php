@@ -7,8 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-
-class PostResource extends JsonResource
+class PostDetailResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -26,7 +25,7 @@ class PostResource extends JsonResource
             'category_name' => optional($this->category)->name ?? 'Unknown Category',
             'created_at_readable' => Carbon::parse($this->created_at)->diffForHumans(),
             'title' => $this->title,
-            'description' => Str::limit($this->description, 100),
+            'description' => $this->description,
             // 'image_path' => $this->image,// don't give direct
             'image_path' => $this->image ? asset('storage/media/'.$this->image->file_name) : null,
         ];
