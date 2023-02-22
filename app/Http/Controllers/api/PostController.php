@@ -13,9 +13,26 @@ use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
-    public function index(){
-       $posts = Post::orderByDesc('created_at')->paginate(10);
-       return PostResource::collection($posts);
+    public function index(Request $request){
+       $query = Post::orderByDesc('created_at');
+    //    if($request->category_id){
+    //     $query->where(function($q1) use ($request){
+    //         $q1 ->where('category_id', $request->category_id);
+    //     });
+    //    }
+
+    if($request->category_id){
+        $query->where('category_id',$request->category_id);
+    }
+    if($request->search){
+        $query->where(function($q1) use($request){
+            $q1->where('title','like','%'.$request->search.'%')
+            ->orWhere('description','like','%'.$request->search.'%');
+        });
+    }
+
+       $posts = $query->paginate(10);
+       return PostResource::collection($posts)->additional(['message'=>'success']);
     }
    public function create(Request $request){
         $request->validate(

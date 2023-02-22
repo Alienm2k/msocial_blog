@@ -16,7 +16,10 @@ class PostResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'title' => $this.title,
+
+
+            'id' => $this->id,
+            'title' => $this->title,
             'description' => Str::limit($this->description, 100),
             'category_name' => \optional($this->category)->name ?? 'Unknown Category',
 
