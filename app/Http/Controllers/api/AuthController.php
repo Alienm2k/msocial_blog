@@ -6,6 +6,7 @@ use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
@@ -31,4 +32,30 @@ class AuthController extends Controller
                 'access_token' => $token
             ]);
     }
+
+    public function login(Request $request){
+        $request->validate(
+            [
+                'email' => 'required|email',
+                'password' => 'required'
+            ]
+            );
+
+            if(Auth::attempt(['email'=>$request->email,'password'=>$request->password])){
+                $user = auth()->user();
+                $token = $user->createToken('Blog')->accessToken;
+
+
+                return ResponseHelper::success([
+                    'access_token' => $token
+                ]);
+
+            }
+    }
+    public function logout(Request $request){
+       auth()->user()->token()->revoke();
+       return ResponseHelper::success([],'Successfuly Logout!');
+    }
+
+
 }
